@@ -38,7 +38,8 @@ export default defineConfig({
     reuseExistingServer: true,
     timeout: 30000,
     env: {
-      NODE_ENV: 'test'
+      NODE_ENV: 'test',
+      VITE_API_URL: 'http://localhost:3001'
     }
   },
 });

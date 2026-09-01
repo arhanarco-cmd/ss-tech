@@ -18,19 +18,35 @@ import { setupSignaling } from "./sockets/signaling";
 import { auditLogger } from "./services/auditLogger";
 
 const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://sexyshreya.tech',
+  'https://www.sexyshreya.tech',
   process.env.CLIENT_URL,
-  "http://localhost:5173",
-  "https://sexyshreya.tech",
-  "https://www.sexyshreya.tech"
 ].filter(Boolean) as string[];
+
+const corsOptions = {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    if (!origin) return callback(null, true);
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.endsWith('.sexyshreya-client.pages.dev') ||
+      origin.endsWith('.pages.dev') ||
+      origin.includes('sexyshreya')
+    ) {
+      return callback(null, true);
+    }
+    return callback(new Error(`Blocked by CORS: ${origin}`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'X-Requested-With'],
+};
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: allowedOrigins,
-    credentials: true,
-  },
+  cors: corsOptions,
 });
 
 // Security Middleware
@@ -48,10 +64,8 @@ app.use(helmet({
   frameguard: { action: "deny" }
 }));
 
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
-}));
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use(express.json());
 app.use(cookieParser());
