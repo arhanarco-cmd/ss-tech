@@ -75,9 +75,12 @@ export async function listMedia(includePrivate: boolean) {
     
     result = items.map(item => {
       const isPriv = item.Key?.startsWith('private/') || false;
+      const mediaUrl = process.env.R2_PUBLIC_URL
+        ? `${process.env.R2_PUBLIC_URL.replace(/\/$/, '')}/${item.Key}`
+        : `/api/gallery/media/${item.Key}`;
       return {
         id: item.Key,
-        url: `/api/gallery/media/${item.Key}`, // Proxy through backend
+        url: mediaUrl,
         title: item.Key?.split('-').slice(1).join('-') || 'Untitled',
         isPrivate: isPriv,
         createdAt: item.LastModified?.toISOString(),

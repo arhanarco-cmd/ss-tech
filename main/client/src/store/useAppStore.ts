@@ -1,4 +1,11 @@
 import { create } from 'zustand';
+import { API_BASE } from '../services/api';
+
+export const getMediaUrl = (url: string) => {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  return `${API_BASE}${url.startsWith('/') ? '' : '/'}${url}`;
+};
 
 type Role = 'default' | 'user' | 'admin';
 

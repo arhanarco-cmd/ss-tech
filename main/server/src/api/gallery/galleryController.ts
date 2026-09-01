@@ -1,7 +1,8 @@
 import express from 'express';
 import multer from 'multer';
+import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { authenticate } from '../../middleware/authenticate';
-import { uploadMedia, listMedia, getMediaStream, deleteMedia } from '../../services/storageAdapter';
+import { uploadMedia, listMedia, deleteMedia, s3 as s3Client } from '../../services/storageAdapter';
 import { verifySession } from '../../services/sessionService';
 
 const router = express.Router();
@@ -53,31 +54,25 @@ router.post('/upload', authenticate, upload.single('file'), async (req, res) => 
   }
 });
 
-router.get(/^\/media\/(.*)/, async (req, res) => {
-  const key = req.params[0];
-  if (!key) return res.status(400).send('Key required');
-
+router.get('/media/*key', async (req, res) => {
   try {
-    const { Body, ContentType, ContentLength } = await getMediaStream(key);
-    
-    res.set('Content-Type', ContentType);
-    if (ContentLength) res.set('Content-Length', ContentLength.toString());
-    res.set('Cache-Control', 'public, max-age=31536000');
-    
-    if (Body && typeof (Body as any).pipe === 'function') {
-      (Body as any).pipe(res);
-    } else if (Body) {
-      (Body as any).pipe(res);
+    const rawKey = (req.params as any).key;
+    const key = Array.isArray(rawKey) ? rawKey.join('/') : (rawKey || (req.params as any)[0]);
+    const command = new GetObjectCommand({
+      Bucket: process.env.R2_BUCKET_NAME || 'sstech-storage',
+      Key: key,
+    });
+    const response = await s3Client.send(command);
+    res.setHeader('Content-Type', response.ContentType || 'image/jpeg');
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    if (response.Body) {
+      (response.Body as any).pipe(res);
     } else {
-      res.status(404).send('Not found');
+      res.status(404).send('Media not found');
     }
-  } catch (error: any) {
-    if (error.name === 'NoSuchKey') {
-      res.status(404).send('Not found');
-    } else {
-      console.error('Stream media error:', error);
-      res.status(500).send('Stream error');
-    }
+  } catch (err) {
+    console.error('Failed to stream media from R2:', err);
+    res.status(404).send('Media not found');
   }
 });
 

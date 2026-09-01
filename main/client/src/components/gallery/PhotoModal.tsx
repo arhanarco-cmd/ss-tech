@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import { X, Trash2 } from 'lucide-react';
-import { GalleryItem, useAppStore } from '../../store/useAppStore';
+import { GalleryItem, useAppStore, getMediaUrl } from '../../store/useAppStore';
 import { API_BASE } from '../../services/api';
 
 interface PhotoModalProps {
@@ -60,7 +60,7 @@ export const PhotoModal: FC<PhotoModalProps> = ({ item, caption, onClose, onDele
 
       <div className="flex flex-col items-center gap-4 max-w-full" onClick={e => e.stopPropagation()}>
         <img 
-          src={item.url} 
+          src={getMediaUrl(item.url)} 
           alt="Preview" 
           className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
         />

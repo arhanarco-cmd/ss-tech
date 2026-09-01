@@ -248,4 +248,22 @@ describe('Gallery RBAC & Audit Log Integration', () => {
     const chunkCall = (s3.send as any).mock.calls.find((call: any[]) => call[0].input.Key?.startsWith('calls/call-999/'));
     expect(chunkCall).toBeDefined();
   });
+
+  it('GET /api/gallery/media/:key streams media with 200 OK and headers', async () => {
+    const stream = require('stream');
+    const readable = new stream.Readable();
+    readable.push('image_bytes');
+    readable.push(null);
+    (s3.send as any).mockResolvedValueOnce({
+      Body: readable,
+      ContentType: 'image/jpeg',
+      ContentLength: 11
+    });
+
+    const res = await request(app).get('/api/gallery/user/media/public/test.jpg');
+    expect(res.status).toBe(200);
+    expect(res.headers['content-type']).toContain('image/jpeg');
+    expect(res.headers['cache-control']).toContain('public');
+    expect(res.body.toString()).toBe('image_bytes');
+  });
 });

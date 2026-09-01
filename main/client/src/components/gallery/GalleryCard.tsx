@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 import { Download, Trash2 } from 'lucide-react';
-import { useAppStore, GalleryItem } from '../../store/useAppStore';
+import { useAppStore, GalleryItem, getMediaUrl } from '../../store/useAppStore';
 import { API_BASE } from '../../services/api';
 import { FLIRTY_QUOTES } from '../../constants/quotes';
 
@@ -19,7 +19,7 @@ export const GalleryCard: FC<GalleryCardProps> = ({ item, idx, onSelect, onDelet
   const handleDownload = (e: React.MouseEvent) => {
     e.stopPropagation();
     const a = document.createElement('a');
-    a.href = item.url;
+    a.href = getMediaUrl(item.url);
     a.download = `gallery_item_${Date.now()}`;
     document.body.appendChild(a);
     a.click();
@@ -64,7 +64,7 @@ export const GalleryCard: FC<GalleryCardProps> = ({ item, idx, onSelect, onDelet
         </div>
       ) : (
         <img 
-          src={item.url} 
+          src={getMediaUrl(item.url)} 
           alt={item.title || 'Gallery item'} 
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           loading="lazy"
