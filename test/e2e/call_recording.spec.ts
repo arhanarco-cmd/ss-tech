@@ -79,6 +79,7 @@ test.describe('WebRTC Call & Chunk Recording Pipeline (STORAGE_PIPELINE.md)', ()
     expect(isCompositorActive).toBe(true);
 
     // 5. Cleanly End Call to trigger recorder stop and final chunk dispatch
+    await page.waitForTimeout(500);
     const endCallBtn = page.getByRole('button', { name: 'End Call' });
     await expect(endCallBtn).toBeVisible();
     await endCallBtn.click();
