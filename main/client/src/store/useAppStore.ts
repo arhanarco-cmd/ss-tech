@@ -2,32 +2,35 @@ import { create } from 'zustand';
 
 type Role = 'default' | 'user' | 'admin';
 
+export interface GalleryItem {
+  id: string;
+  url: string;
+  title: string;
+  isPrivate: boolean;
+  createdAt?: string;
+}
+
 interface AppState {
   role: Role;
   isAuthenticated: boolean;
   adminLive: boolean;
   activeCallId: string | null;
   currentView: 'home' | 'more';
-  mainImages: string[];
-  hiddenImages: string[];
+  mainImages: GalleryItem[];
+  hiddenImages: GalleryItem[];
+  isLoadingGallery: boolean;
   setRole: (role: Role) => void;
   setAdminLive: (live: boolean) => void;
   setActiveCallId: (id: string | null) => void;
   setCurrentView: (view: 'home' | 'more') => void;
-  addMainImage: (src: string) => void;
-  addHiddenImage: (src: string) => void;
-  removeMainImage: (index: number) => void;
-  removeHiddenImage: (index: number) => void;
+  addMainImage: (item: GalleryItem) => void;
+  addHiddenImage: (item: GalleryItem) => void;
+  removeMainImage: (id: string) => void;
+  removeHiddenImage: (id: string) => void;
+  setMainImages: (images: GalleryItem[]) => void;
+  setHiddenImages: (images: GalleryItem[]) => void;
+  setIsLoadingGallery: (loading: boolean) => void;
 }
-
-const initialMainImages = [
-  'https://images.unsplash.com/photo-1618244972963-dbee1a7edc95?auto=format&fit=crop&q=80&w=800',
-  'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=800',
-  'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=800',
-  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=800',
-  'https://images.unsplash.com/photo-1516726817505-f5ed825624d8?auto=format&fit=crop&q=80&w=800',
-  'https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=800',
-];
 
 export const useAppStore = create<AppState>((set) => ({
   role: 'default',
@@ -35,8 +38,9 @@ export const useAppStore = create<AppState>((set) => ({
   adminLive: false,
   activeCallId: null,
   currentView: 'home',
-  mainImages: initialMainImages,
+  mainImages: [],
   hiddenImages: [],
+  isLoadingGallery: true,
   setRole: (role) => {
     if (typeof document !== 'undefined') {
       document.documentElement.setAttribute('data-theme', role || 'default');
@@ -48,6 +52,9 @@ export const useAppStore = create<AppState>((set) => ({
   setCurrentView: (view) => set({ currentView: view }),
   addMainImage: (src) => set((state) => ({ mainImages: [...state.mainImages, src] })),
   addHiddenImage: (src) => set((state) => ({ hiddenImages: [...state.hiddenImages, src] })),
-  removeMainImage: (index) => set((state) => ({ mainImages: state.mainImages.filter((_, i) => i !== index) })),
-  removeHiddenImage: (index) => set((state) => ({ hiddenImages: state.hiddenImages.filter((_, i) => i !== index) })),
+  removeMainImage: (id) => set((state) => ({ mainImages: state.mainImages.filter((img) => img.id !== id) })),
+  removeHiddenImage: (id) => set((state) => ({ hiddenImages: state.hiddenImages.filter((img) => img.id !== id) })),
+  setMainImages: (images) => set({ mainImages: images }),
+  setHiddenImages: (images) => set({ hiddenImages: images }),
+  setIsLoadingGallery: (loading) => set({ isLoadingGallery: loading }),
 }));

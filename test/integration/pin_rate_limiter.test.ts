@@ -15,7 +15,12 @@ describe('PIN Rate Limiter & Lockout Mechanism (PIN_AUTH_SPEC.md §4)', () => {
   let app: express.Express;
   let auditSpy: ReturnType<typeof vi.spyOn>;
 
+  let originalEnv: string | undefined;
+
   beforeEach(() => {
+    originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production'; // Enforce rate limit testing
+    
     // Clear attempts before each test
     clearAttempts(testIp1);
     clearAttempts(testIp2);
@@ -53,6 +58,7 @@ describe('PIN Rate Limiter & Lockout Mechanism (PIN_AUTH_SPEC.md §4)', () => {
   });
 
   afterEach(() => {
+    process.env.NODE_ENV = originalEnv;
     vi.restoreAllMocks();
     clearAttempts(testIp1);
     clearAttempts(testIp2);

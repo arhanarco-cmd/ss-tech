@@ -73,4 +73,18 @@ router.get("/session", (req, res) => {
   res.status(200).json({ role: session.role, expiresAt: new Date(session.exp * 1000).toISOString() });
 });
 
+router.get("/me", (req, res) => {
+  const token = req.cookies?.sexyshreya_session;
+  if (!token) {
+    return res.status(200).json({ authenticated: false, role: "default" });
+  }
+  try {
+    const { verifySession } = require("../../services/sessionService");
+    const payload = verifySession(token);
+    return res.status(200).json({ authenticated: true, role: payload.role });
+  } catch {
+    return res.status(200).json({ authenticated: false, role: "default" });
+  }
+});
+
 export default router;

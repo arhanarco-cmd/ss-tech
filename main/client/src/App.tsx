@@ -11,14 +11,44 @@ import { VideoCallRoom } from './components/call/VideoCallRoom';
 import { UploadModal } from './components/gallery/UploadModal';
 import { socket } from './services/socket';
 
+import { API_BASE } from './services/api';
+
 import { ThoughtStream } from './components/layout/ThoughtStream';
 
 function App() {
-  const { role, adminLive, activeCallId, setAdminLive, currentView } = useAppStore();
+  const { role, adminLive, activeCallId, setAdminLive, currentView, setRole, setMainImages, setHiddenImages, setIsLoadingGallery } = useAppStore();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [pinModalOpen, setPinModalOpen] = useState(false);
   const [aboutModalOpen, setAboutModalOpen] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
+
+  useEffect(() => {
+    // Session restore
+    fetch(`${API_BASE}/api/auth/me`, { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.authenticated) {
+          setRole(data.role);
+          document.documentElement.setAttribute('data-theme', data.role);
+        }
+      })
+      .catch(err => console.error('Auth check failed', err));
+
+    // Gallery fetch
+    setIsLoadingGallery(true);
+    fetch(`${API_BASE}/api/gallery`, { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          const main = data.filter((d: any) => !d.isPrivate);
+          const hidden = data.filter((d: any) => d.isPrivate);
+          setMainImages(main);
+          setHiddenImages(hidden);
+        }
+      })
+      .catch(err => console.error('Gallery fetch failed', err))
+      .finally(() => setIsLoadingGallery(false));
+  }, [setRole, setMainImages, setHiddenImages, setIsLoadingGallery]);
 
   // Apply theme to document element
   useEffect(() => {

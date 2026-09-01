@@ -11,6 +11,7 @@ dotenv.config();
 
 import authRoutes from "./api/auth/authController";
 import callRoutes from "./api/call/callController";
+import galleryRoutes from "./api/gallery/galleryController";
 import { auditLogMiddleware } from "./middleware/auditLog";
 import { errorHandler } from "./middleware/errorHandler";
 import { setupSignaling } from "./sockets/signaling";
@@ -61,6 +62,16 @@ app.use(auditLogMiddleware);
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/call", callRoutes);
+app.use("/api/gallery", galleryRoutes);
+
+// Test bypass endpoints
+if (process.env.NODE_ENV === 'test') {
+  app.post("/api/test/reset-rate-limit", (req, res) => {
+    const { resetRateLimiter } = require("./middleware/rateLimiter");
+    resetRateLimiter();
+    res.json({ success: true });
+  });
+}
 
 // Error Handling
 app.use(errorHandler);

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, type FC } from 'react';
 import { X, Camera, UploadCloud, Image as ImageIcon } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
+import { API_BASE } from '../../services/api';
 
 interface UploadModalProps {
   isOpen: boolean;
@@ -54,11 +55,13 @@ export const UploadModal: FC<UploadModalProps> = ({ isOpen, onClose }) => {
     setPreviewSrc(null);
   };
 
+  const [selectedFile, setSelectedFile] = useState<Blob | null>(null);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      const url = URL.createObjectURL(file);
-      setPreviewSrc(url);
+      setSelectedFile(file);
+      setPreviewSrc(URL.createObjectURL(file));
     }
   };
 
@@ -70,17 +73,45 @@ export const UploadModal: FC<UploadModalProps> = ({ isOpen, onClose }) => {
     const ctx = canvas.getContext('2d');
     if (ctx) {
       ctx.drawImage(videoRef.current, 0, 0);
-      setPreviewSrc(canvas.toDataURL('image/jpeg'));
+      canvas.toBlob((blob) => {
+        if (blob) {
+          setSelectedFile(blob);
+          setPreviewSrc(URL.createObjectURL(blob));
+        }
+      }, 'image/jpeg');
     }
     stopCamera();
   };
 
-  const handleSubmit = () => {
-    if (previewSrc) {
-      if (currentView === 'home') {
-        addMainImage(previewSrc);
-      } else {
-        addHiddenImage(previewSrc);
+  const handleSubmit = async () => {
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append('file', selectedFile, 'upload.jpg');
+      formData.append('isPrivate', currentView === 'more' ? 'true' : 'false');
+      
+      try {
+        const res = await fetch(`${API_BASE}/api/gallery/upload`, {
+          method: 'POST',
+          credentials: 'include',
+          body: formData
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          if (currentView === 'home') {
+            useAppStore.getState().setMainImages([data, ...useAppStore.getState().mainImages]);
+          } else {
+            useAppStore.getState().setHiddenImages([data, ...useAppStore.getState().hiddenImages]);
+          }
+          // Simple toast
+          const toast = document.createElement('div');
+          toast.className = 'fixed bottom-4 right-4 bg-primary text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-slide-up';
+          toast.innerText = 'Upload successful!';
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 3000);
+        }
+      } catch (err) {
+        console.error('Upload failed', err);
       }
     }
     handleClose();
@@ -89,6 +120,7 @@ export const UploadModal: FC<UploadModalProps> = ({ isOpen, onClose }) => {
   const handleClose = () => {
     stopCamera();
     setPreviewSrc(null);
+    setSelectedFile(null);
     setMode('picker');
     onClose();
   };

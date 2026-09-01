@@ -1,32 +1,16 @@
 import { useState, type FC } from 'react';
-import { X, Download, Trash2, Upload } from 'lucide-react';
-import { useAppStore } from '../../store/useAppStore';
+import { Upload } from 'lucide-react';
+import { useAppStore, GalleryItem } from '../../store/useAppStore';
+import { GalleryCard } from './GalleryCard';
+import { PhotoModal } from './PhotoModal';
 
 interface MainGalleryProps {
   onUploadClick: () => void;
 }
 
-import { FLIRTY_QUOTES } from '../../constants/quotes';
-
 export const MainGallery: FC<MainGalleryProps> = ({ onUploadClick }) => {
-  const [selectedImg, setSelectedImg] = useState<string | null>(null);
-  const [selectedCaption, setSelectedCaption] = useState<string>('');
-  const { role, mainImages, removeMainImage } = useAppStore();
-
-  const handleDownload = (e: React.MouseEvent, src: string) => {
-    e.stopPropagation();
-    const a = document.createElement('a');
-    a.href = src;
-    a.download = `gallery_item_${Date.now()}`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
-
-  const handleDelete = (e: React.MouseEvent, index: number) => {
-    e.stopPropagation();
-    removeMainImage(index);
-  };
+  const [selectedImg, setSelectedImg] = useState<{ item: GalleryItem, caption: string } | null>(null);
+  const { role, mainImages, removeMainImage, isLoadingGallery } = useAppStore();
 
   return (
     <div className="mb-12">
@@ -40,57 +24,34 @@ export const MainGallery: FC<MainGalleryProps> = ({ onUploadClick }) => {
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {mainImages.map((src, idx) => (
-          <div 
-            key={idx} 
-            className="aspect-square rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-pink-200/50 bg-white/20 hover:scale-[1.02] cursor-pointer relative group animate-fade-in"
-            style={{ animationDelay: `${idx * 100}ms` }}
-            onClick={() => {
-              setSelectedImg(src);
-              setSelectedCaption(FLIRTY_QUOTES[Math.floor(Math.random() * FLIRTY_QUOTES.length)]);
-            }}
-          >
-            <img 
-              src={src} 
-              alt="Gallery item" 
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-              loading="lazy"
+        {isLoadingGallery ? (
+          Array.from({ length: 6 }).map((_, idx) => (
+            <div key={`skeleton-${idx}`} className="aspect-square rounded-2xl bg-white/10 border border-white/5 animate-pulse shadow-sm"></div>
+          ))
+        ) : mainImages.length > 0 ? (
+          mainImages.map((item, idx) => (
+            <GalleryCard 
+              key={item.id || idx} 
+              item={item} 
+              idx={idx}
+              onSelect={(item, caption) => setSelectedImg({ item, caption })}
+              onDelete={removeMainImage}
             />
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300" />
-            
-            {role === 'admin' && (
-              <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button aria-label="Download item" onClick={(e) => handleDownload(e, src)} className="p-2 bg-black/60 hover:bg-primary text-white rounded-lg backdrop-blur-sm transition-colors shadow-md">
-                  <Download className="w-4 h-4" />
-                </button>
-                <button aria-label="Delete item" onClick={(e) => handleDelete(e, idx)} className="p-2 bg-black/60 hover:bg-red-500 text-white rounded-lg backdrop-blur-sm transition-colors shadow-md">
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            )}
+          ))
+        ) : (
+          <div className="col-span-full text-center py-20 text-rose-300 font-medium text-sm">
+            ✨ No uploads yet. Click "+ Add Photo/Video" to add your first memory! ✨
           </div>
-        ))}
+        )}
       </div>
 
       {selectedImg && (
-        <div 
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4"
-          onClick={() => setSelectedImg(null)}
-        >
-          <button className="absolute top-4 right-4 p-2 text-white hover:bg-white/10 rounded-full transition-colors">
-            <X className="w-8 h-8" />
-          </button>
-          <div className="flex flex-col items-center gap-4" onClick={e => e.stopPropagation()}>
-            <img 
-              src={selectedImg} 
-              alt="Preview" 
-              className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
-            />
-            <div className="bg-white/20 border border-pink-300/50 shadow-[0_0_15px_rgba(244,63,94,0.3)] rounded-full px-6 py-3 text-pink-100 font-medium text-sm sm:text-base backdrop-blur-md max-w-[90%] text-center">
-              {selectedCaption}
-            </div>
-          </div>
-        </div>
+        <PhotoModal 
+          item={selectedImg.item} 
+          caption={selectedImg.caption} 
+          onClose={() => setSelectedImg(null)} 
+          onDelete={removeMainImage} 
+        />
       )}
     </div>
   );

@@ -1,32 +1,50 @@
-import fs from "fs";
-import path from "path";
+import { PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { s3 } from './storageAdapter';
 
-const LOG_PATH = process.env.AUDIT_LOG_PATH ?? path.resolve(__dirname, "../../logs/audit.ndjson");
+const R2_BUCKET_NAME = process.env.R2_BUCKET_NAME || 'sstech-storage';
 
-// Ensure the directory exists before opening the write stream
-const logDir = path.dirname(LOG_PATH);
-if (!fs.existsSync(logDir)) {
-  fs.mkdirSync(logDir, { recursive: true });
+const memBuffer = new Map<string, string>();
+
+async function flushToR2(dateStr: string) {
+  const key = `logs/audit-${dateStr}.ndjson`;
+  let existing = '';
+  
+  try {
+    const res = await s3.send(new GetObjectCommand({ Bucket: R2_BUCKET_NAME, Key: key }));
+    existing = await res.Body?.transformToString() || '';
+  } catch (err: any) {
+    // Ignore NoSuchKey
+  }
+
+  const newData = memBuffer.get(dateStr) || '';
+  if (!newData && !existing) return;
+
+  const combined = existing + newData;
+  
+  try {
+    await s3.send(new PutObjectCommand({
+      Bucket: R2_BUCKET_NAME,
+      Key: key,
+      Body: combined,
+      ContentType: 'application/x-ndjson'
+    }));
+    // Clear buffer after successful upload
+    memBuffer.set(dateStr, '');
+  } catch (err) {
+    console.error('[AuditLogger] CRITICAL: R2 upload failed:', err);
+  }
 }
-
-const logStream = fs.createWriteStream(LOG_PATH, {
-  flags: "a",
-  encoding: "utf8",
-});
-
-logStream.on("error", (err) => {
-  console.error("[AuditLogger] CRITICAL: Write failed:", err.message);
-});
 
 export const auditLogger = {
   write(event: Record<string, unknown>): void {
-    const entry = JSON.stringify({
-      ts: new Date().toISOString(),
-      ...event,
-    });
-    logStream.write(entry + "\n");
+    const ts = new Date();
+    const dateStr = ts.toISOString().split('T')[0];
+    const entry = JSON.stringify({ ts: ts.toISOString(), ...event }) + '\n';
+    
+    const current = memBuffer.get(dateStr) || '';
+    memBuffer.set(dateStr, current + entry);
+    
+    // Fire and forget upload (or await if you wanted blocking)
+    flushToR2(dateStr).catch(() => {});
   },
 };
-
-process.on("SIGTERM", () => { logStream.end(); });
-process.on("SIGINT", () => { logStream.end(); });
