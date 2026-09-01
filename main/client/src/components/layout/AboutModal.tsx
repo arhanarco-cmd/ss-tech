@@ -26,9 +26,9 @@ export const AboutModal: FC<AboutModalProps> = ({ isOpen, onClose }) => {
           <section>
             <h3 className="text-primary font-semibold mb-3">Developer Bio</h3>
             <p className="text-sm text-white/70 leading-relaxed">
-              Passionate software developer focusing on modern web technologies, 
+              Shreya is a passionate software developer focusing on modern web technologies, 
               scalable architecture, and seamless user experiences. 
-              Always eager to build high-performance applications with elegant code.
+              Always eager to build high-performance applications with elegant code. With.....
             </p>
           </section>
 

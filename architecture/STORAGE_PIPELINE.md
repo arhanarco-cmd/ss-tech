@@ -1,5 +1,5 @@
 # Storage Pipeline Specification
-**Project:** SStech — High-Security Interactive Web Gallery  
+**Project:** sexyshreya — High-Security Interactive Web Gallery  
 **Document:** STORAGE_PIPELINE.md  
 **Version:** 1.0.0  
 **Date:** 2026-09-01  
@@ -500,7 +500,7 @@ Client sends final chunk (isFinal=true)
 
 | Concern                    | Mitigation                                                      |
 |----------------------------|-----------------------------------------------------------------|
-| Unauthorized upload        | Chunk endpoint requires valid `sstech_session` cookie           |
+| Unauthorized upload        | Chunk endpoint requires valid `sexyshreya_session` cookie           |
 | Session ID forgery         | Session ID validated against JWT `jti` claim                    |
 | Path traversal in filenames| Session IDs are UUIDv4 — validated with regex before use        |
 | Storage overflow           | Max chunk size enforced via `multer({ limits: { fileSize } })`  |

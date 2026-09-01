@@ -1,5 +1,5 @@
 # System Architecture Specification
-**Project:** SStech — High-Security Interactive Web Gallery  
+**Project:** sexyshreya — High-Security Interactive Web Gallery  
 **Version:** 1.0.0  
 **Date:** 2026-09-01  
 **Classification:** Production-Grade Technical Specification
@@ -8,7 +8,7 @@
 
 ## 1. Overview
 
-SStech is a full-stack, high-security interactive web gallery platform featuring:
+sexyshreya is a full-stack, high-security interactive web gallery platform featuring:
 
 - PIN-based dual-role authentication (User / Admin)
 - Real-time 1-to-1 WebRTC video calling with server-side recording
@@ -21,7 +21,7 @@ SStech is a full-stack, high-security interactive web gallery platform featuring
 ## 2. Repository Structure
 
 ```
-SStech/
+sexyshreya/
 ├── architecture/                   # Technical specification documents
 │   ├── ARCHITECTURE.md
 │   ├── PIN_AUTH_SPEC.md

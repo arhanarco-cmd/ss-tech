@@ -56,7 +56,7 @@ describe('Storage Adapter & Chunk Assembly (STORAGE_PIPELINE.md §6.2)', () => {
   let adapter: TestableLocalAdapter;
 
   beforeEach(async () => {
-    tempBaseDir = await fs.mkdtemp(path.join(os.tmpdir(), 'sstech-storage-test-'));
+    tempBaseDir = await fs.mkdtemp(path.join(os.tmpdir(), 'sexyshreya-storage-test-'));
     adapter = new TestableLocalAdapter(tempBaseDir);
   });
 

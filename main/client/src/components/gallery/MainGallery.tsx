@@ -8,14 +8,29 @@ interface MainGalleryProps {
 
 export const MainGallery: FC<MainGalleryProps> = ({ onUploadClick }) => {
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
-  const { role, publicImages } = useAppStore();
+  const { role, mainImages, removeMainImage } = useAppStore();
+
+  const handleDownload = (e: React.MouseEvent, src: string) => {
+    e.stopPropagation();
+    const a = document.createElement('a');
+    a.href = src;
+    a.download = `gallery_item_${Date.now()}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  const handleDelete = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation();
+    removeMainImage(index);
+  };
 
   return (
     <div className="mb-12">
       <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-2">
-        <h2 className="text-2xl font-bold">Public Gallery</h2>
+        <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-400 drop-shadow-md">Public Gallery</h2>
         {(role === 'admin' || role === 'user') && (
-          <button onClick={onUploadClick} className="flex items-center gap-2 px-3 py-1.5 text-sm bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-colors">
+          <button onClick={onUploadClick} className="flex items-center gap-2 px-3 py-1.5 text-sm bg-primary/20 text-primary font-bold rounded-lg hover:bg-primary/30 transition-colors shadow-sm">
             <Upload className="w-4 h-4" />
             <span className="hidden sm:inline">Add Photo/Video</span>
           </button>
@@ -23,10 +38,10 @@ export const MainGallery: FC<MainGalleryProps> = ({ onUploadClick }) => {
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {publicImages.map((src, idx) => (
+        {mainImages.map((src, idx) => (
           <div 
             key={idx} 
-            className="aspect-square overflow-hidden rounded-xl cursor-pointer relative group bg-white/5 animate-fade-in"
+            className="aspect-square overflow-hidden rounded-xl cursor-pointer relative group bg-white/5 animate-fade-in shadow-lg"
             style={{ animationDelay: `${idx * 100}ms` }}
             onClick={() => setSelectedImg(src)}
           >
@@ -39,11 +54,11 @@ export const MainGallery: FC<MainGalleryProps> = ({ onUploadClick }) => {
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300" />
             
             {role === 'admin' && (
-              <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" onClick={e => e.stopPropagation()}>
-                <button aria-label="Download item" className="p-2 bg-black/60 hover:bg-primary text-white rounded-lg backdrop-blur-sm transition-colors">
+              <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <button aria-label="Download item" onClick={(e) => handleDownload(e, src)} className="p-2 bg-black/60 hover:bg-primary text-white rounded-lg backdrop-blur-sm transition-colors shadow-md">
                   <Download className="w-4 h-4" />
                 </button>
-                <button aria-label="Delete item" className="p-2 bg-black/60 hover:bg-red-500 text-white rounded-lg backdrop-blur-sm transition-colors">
+                <button aria-label="Delete item" onClick={(e) => handleDelete(e, idx)} className="p-2 bg-black/60 hover:bg-red-500 text-white rounded-lg backdrop-blur-sm transition-colors shadow-md">
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>

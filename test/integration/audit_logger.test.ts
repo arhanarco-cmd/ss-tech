@@ -8,7 +8,7 @@ describe('Audit Logger & NDJSON Integrity (LOGGING_SCHEMA.md)', () => {
   let tempLogFile: string;
 
   beforeEach(() => {
-    tempLogDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sstech-audit-test-'));
+    tempLogDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sexyshreya-audit-test-'));
     tempLogFile = path.join(tempLogDir, 'audit.ndjson');
   });
 

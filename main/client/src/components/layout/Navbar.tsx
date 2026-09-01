@@ -9,7 +9,9 @@ export const Navbar: FC<NavbarProps> = ({ onMenuClick }) => {
   return (
     <nav className="flex items-center justify-between p-4 border-b border-white/10 bg-surface z-40 sticky top-0">
       <div className="flex items-center gap-4">
-        <h1 className="text-xl font-bold tracking-wider">SSTECH GALLERY</h1>
+        <h1 className="text-xl font-extrabold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-300 to-rose-400 drop-shadow-[0_2px_12px_rgba(244,63,94,0.7)]">
+          SEXYSHREYA GALLERY
+        </h1>
       </div>
       
       <div className="flex items-center gap-4">

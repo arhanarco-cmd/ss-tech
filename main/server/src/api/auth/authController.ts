@@ -49,7 +49,7 @@ router.post("/login", rateLimiterMiddleware, async (req, res) => {
     expiresAt,
   });
 
-  res.cookie("sstech_session", token, {
+  res.cookie("sexyshreya_session", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
@@ -61,7 +61,7 @@ router.post("/login", rateLimiterMiddleware, async (req, res) => {
 });
 
 router.post("/logout", (req, res) => {
-  res.clearCookie("sstech_session");
+  res.clearCookie("sexyshreya_session");
   res.status(200).json({ message: "Logged out" });
 });
 

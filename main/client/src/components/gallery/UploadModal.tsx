@@ -13,7 +13,7 @@ export const UploadModal: FC<UploadModalProps> = ({ isOpen, onClose }) => {
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
   
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { currentView, addPublicImage, addHiddenImage } = useAppStore();
+  const { currentView, addMainImage, addHiddenImage } = useAppStore();
 
   // Stop camera when unmounting or switching modes
   useEffect(() => {
@@ -78,7 +78,7 @@ export const UploadModal: FC<UploadModalProps> = ({ isOpen, onClose }) => {
   const handleSubmit = () => {
     if (previewSrc) {
       if (currentView === 'home') {
-        addPublicImage(previewSrc);
+        addMainImage(previewSrc);
       } else {
         addHiddenImage(previewSrc);
       }

@@ -1,5 +1,5 @@
 # PIN Authentication Specification
-**Project:** SStech — High-Security Interactive Web Gallery  
+**Project:** sexyshreya — High-Security Interactive Web Gallery  
 **Document:** PIN_AUTH_SPEC.md  
 **Version:** 1.0.0  
 **Date:** 2026-09-01  
@@ -9,7 +9,7 @@
 
 ## 1. Overview
 
-SStech uses a dual-role PIN authentication system. There are exactly two roles:
+sexyshreya uses a dual-role PIN authentication system. There are exactly two roles:
 
 | Role    | Access Level                                                      |
 |---------|-------------------------------------------------------------------|
@@ -304,7 +304,7 @@ const COOKIE_OPTIONS = {
   path:     '/',
 };
 
-res.cookie('sstech_session', token, {
+res.cookie('sexyshreya_session', token, {
   ...COOKIE_OPTIONS,
   maxAge: role === 'admin' ? 3_600_000 : 14_400_000,
 });
@@ -315,7 +315,7 @@ res.cookie('sstech_session', token, {
 ```typescript
 // src/middleware/authenticate.ts
 export function authenticate(req: Request, res: Response, next: NextFunction): void {
-  const token = req.cookies?.sstech_session;
+  const token = req.cookies?.sexyshreya_session;
   if (!token) { res.status(401).json({ error: 'No session' }); return; }
 
   try {
@@ -323,7 +323,7 @@ export function authenticate(req: Request, res: Response, next: NextFunction): v
     (req as any).session = payload;
     next();
   } catch {
-    res.clearCookie('sstech_session');
+    res.clearCookie('sexyshreya_session');
     res.status(401).json({ error: 'Invalid or expired session' });
   }
 }
@@ -355,7 +355,7 @@ export function requireRole(role: 'user' | 'admin') {
 ```json
 { "role": "user", "expiresAt": "2026-09-01T12:00:00Z" }
 ```
-Sets `sstech_session` httpOnly cookie.
+Sets `sexyshreya_session` httpOnly cookie.
 
 **Failure (401):**
 ```json
@@ -367,7 +367,7 @@ Increments rate-limit counter for requesting IP.
 
 ### `POST /api/auth/logout`
 
-Clears `sstech_session` cookie server-side.
+Clears `sexyshreya_session` cookie server-side.
 
 **Response (200):**
 ```json

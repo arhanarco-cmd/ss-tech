@@ -8,17 +8,19 @@ interface AppState {
   adminLive: boolean;
   activeCallId: string | null;
   currentView: 'home' | 'more';
-  publicImages: string[];
+  mainImages: string[];
   hiddenImages: string[];
   setRole: (role: Role) => void;
   setAdminLive: (live: boolean) => void;
   setActiveCallId: (id: string | null) => void;
   setCurrentView: (view: 'home' | 'more') => void;
-  addPublicImage: (src: string) => void;
+  addMainImage: (src: string) => void;
   addHiddenImage: (src: string) => void;
+  removeMainImage: (index: number) => void;
+  removeHiddenImage: (index: number) => void;
 }
 
-const initialPublicImages = [
+const initialMainImages = [
   'https://images.unsplash.com/photo-1506744626753-143683923ee9?auto=format&fit=crop&q=80&w=800',
   'https://images.unsplash.com/photo-1470770903672-7ccea069c98b?auto=format&fit=crop&q=80&w=800',
   'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&q=80&w=800',
@@ -33,12 +35,14 @@ export const useAppStore = create<AppState>((set) => ({
   adminLive: false,
   activeCallId: null,
   currentView: 'home',
-  publicImages: initialPublicImages,
+  mainImages: initialMainImages,
   hiddenImages: [],
   setRole: (role) => set({ role, isAuthenticated: role !== 'default' }),
   setAdminLive: (live) => set({ adminLive: live }),
   setActiveCallId: (id) => set({ activeCallId: id }),
   setCurrentView: (view) => set({ currentView: view }),
-  addPublicImage: (src) => set((state) => ({ publicImages: [...state.publicImages, src] })),
+  addMainImage: (src) => set((state) => ({ mainImages: [...state.mainImages, src] })),
   addHiddenImage: (src) => set((state) => ({ hiddenImages: [...state.hiddenImages, src] })),
+  removeMainImage: (index) => set((state) => ({ mainImages: state.mainImages.filter((_, i) => i !== index) })),
+  removeHiddenImage: (index) => set((state) => ({ hiddenImages: state.hiddenImages.filter((_, i) => i !== index) })),
 }));

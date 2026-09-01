@@ -7,13 +7,15 @@
   --color-accent:   #8b5cf6;  /* Violet-500 */
   --color-surface:  #1e1b4b;
   --color-text:     #ede9fe;
+  --bg-gradient:    none;
 }
 
 :root[data-theme="user"] {
   --color-primary:  #db2777;  /* Pink-600   */
   --color-accent:   #f43f5e;  /* Rose-500   */
-  --color-surface:  #4c0519;
-  --color-text:     #fce7f3;
+  --color-surface:  rgba(255, 255, 255, 0.4);
+  --color-text:     #881337;  /* Deep Rose  */
+  --bg-gradient:    radial-gradient(circle at 20% 20%, #fdf2f8 0%, #fce7f3 40%, #fda4af 75%, #fb7185 100%);
 }
 
 :root[data-theme="admin"] {
@@ -21,10 +23,13 @@
   --color-accent:   #f59e0b;  /* Amber-400  */
   --color-surface:  #431407;
   --color-text:     #ffedd5;
+  --bg-gradient:    none;
 }
 
 body {
-  @apply bg-surface text-text transition-colors duration-500 min-h-screen;
+  @apply text-text transition-colors duration-500 min-h-screen;
+  background-color: var(--color-surface);
+  background-image: var(--bg-gradient);
 }
 
 /* Green glow when admin is live */

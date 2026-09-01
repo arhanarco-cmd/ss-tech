@@ -6,7 +6,7 @@ export function authenticate(
   res: Response,
   next: NextFunction
 ): void {
-  const token = req.cookies?.sstech_session;
+  const token = req.cookies?.sexyshreya_session;
   if (!token) {
     res.status(401).json({ error: "No session" });
     return;
@@ -17,7 +17,7 @@ export function authenticate(
     (req as any).session = payload;
     next();
   } catch {
-    res.clearCookie("sstech_session");
+    res.clearCookie("sexyshreya_session");
     res.status(401).json({ error: "Invalid or expired session" });
   }
 }

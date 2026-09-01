@@ -7,29 +7,44 @@ interface HiddenGalleryProps {
 }
 
 export const HiddenGallery: FC<HiddenGalleryProps> = ({ onUploadClick }) => {
-  const { role, hiddenImages } = useAppStore();
+  const { role, hiddenImages, removeHiddenImage } = useAppStore();
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
+
+  const handleDownload = (e: React.MouseEvent, src: string) => {
+    e.stopPropagation();
+    const a = document.createElement('a');
+    a.href = src;
+    a.download = `hidden_item_${Date.now()}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  const handleDelete = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation();
+    removeHiddenImage(index);
+  };
 
   return (
     <div className="animate-slide-up mb-12">
       <div className="flex items-center justify-between mb-6 border-b border-primary/30 pb-2">
-        <h2 className="text-2xl font-bold text-primary">Hidden Gallery</h2>
-        <button onClick={onUploadClick} className="flex items-center gap-2 px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/80 transition-colors">
+        <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-400 drop-shadow-md">Hidden Gallery</h2>
+        <button onClick={onUploadClick} className="flex items-center gap-2 px-3 py-1.5 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/80 transition-colors shadow-sm">
           <Upload className="w-4 h-4" />
           <span className="hidden sm:inline">Add Photo/Video</span>
         </button>
       </div>
 
       {hiddenImages.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-12 text-primary/40 border border-primary/20 border-dashed rounded-xl">
-          <p>No private items yet.</p>
+        <div className="flex flex-col items-center justify-center p-12 text-primary/60 border-2 border-primary/20 border-dashed rounded-xl backdrop-blur-sm bg-white/5">
+          <p className="font-bold tracking-wide">No private items yet.</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {hiddenImages.map((src, idx) => (
             <div 
               key={idx} 
-              className="aspect-square bg-surface border border-primary/20 rounded-xl flex items-center justify-center relative group overflow-hidden cursor-pointer"
+              className="aspect-square bg-surface border border-primary/20 rounded-xl flex items-center justify-center relative group overflow-hidden cursor-pointer shadow-lg"
               onClick={() => setSelectedImg(src)}
             >
               <img 
@@ -41,11 +56,11 @@ export const HiddenGallery: FC<HiddenGalleryProps> = ({ onUploadClick }) => {
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300" />
               
               {role === 'admin' && (
-                <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" onClick={e => e.stopPropagation()}>
-                  <button aria-label="Download item" className="p-2 bg-black/60 hover:bg-primary text-white rounded-lg backdrop-blur-sm transition-colors">
+                <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button aria-label="Download item" onClick={(e) => handleDownload(e, src)} className="p-2 bg-black/60 hover:bg-primary text-white rounded-lg backdrop-blur-sm transition-colors shadow-md">
                     <Download className="w-4 h-4" />
                   </button>
-                  <button aria-label="Delete item" className="p-2 bg-black/60 hover:bg-red-500 text-white rounded-lg backdrop-blur-sm transition-colors">
+                  <button aria-label="Delete item" onClick={(e) => handleDelete(e, idx)} className="p-2 bg-black/60 hover:bg-red-500 text-white rounded-lg backdrop-blur-sm transition-colors shadow-md">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>

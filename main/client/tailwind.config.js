@@ -27,12 +27,19 @@ export default {
           '40%': { transform: 'translateX(5px)' },
           '60%': { transform: 'translateX(-5px)' },
           '80%': { transform: 'translateX(5px)' },
+        },
+        'blob': {
+          '0%': { transform: 'translate(0px, 0px) scale(1)' },
+          '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+          '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+          '100%': { transform: 'translate(0px, 0px) scale(1)' },
         }
       },
       animation: {
         'fade-in': 'fade-in 0.5s ease-out forwards',
         'slide-up': 'slide-up 0.5s ease-out forwards',
         'shake': 'shake 0.4s ease-in-out',
+        'blob': 'blob 10s infinite',
       }
     },
   },

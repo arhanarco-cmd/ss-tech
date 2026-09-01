@@ -7,7 +7,7 @@ export function setupSignaling(io: Server) {
   io.use((socket, next) => {
     try {
       const cookieStr = socket.request.headers.cookie || "";
-      const match = cookieStr.match(/sstech_session=([^;]+)/);
+      const match = cookieStr.match(/sexyshreya_session=([^;]+)/);
       if (match) {
         const payload = verifySession(match[1]);
         (socket as any).session = payload;

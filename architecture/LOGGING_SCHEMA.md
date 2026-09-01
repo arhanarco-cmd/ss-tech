@@ -1,5 +1,5 @@
 # Audit Logging Schema
-**Project:** SStech — High-Security Interactive Web Gallery  
+**Project:** sexyshreya — High-Security Interactive Web Gallery  
 **Document:** LOGGING_SCHEMA.md  
 **Version:** 1.0.0  
 **Date:** 2026-09-01  
@@ -9,7 +9,7 @@
 
 ## 1. Overview
 
-The SStech audit logger is an **append-only, structured event logger** capturing all security-relevant system activity.
+The sexyshreya audit logger is an **append-only, structured event logger** capturing all security-relevant system activity.
 
 **Primary purposes:**
 - **Security forensics:** Reconstruct attack sequences from failed PIN attempts, IP patterns, session anomalies
