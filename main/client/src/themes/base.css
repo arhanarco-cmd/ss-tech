@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root[data-theme="default"] {
+  --color-primary:  #7c3aed;  /* Purple-600 */
+  --color-accent:   #8b5cf6;  /* Violet-500 */
+  --color-surface:  #1e1b4b;
+  --color-text:     #ede9fe;
+}
+
+:root[data-theme="user"] {
+  --color-primary:  #db2777;  /* Pink-600   */
+  --color-accent:   #f43f5e;  /* Rose-500   */
+  --color-surface:  #4c0519;
+  --color-text:     #fce7f3;
+}
+
+:root[data-theme="admin"] {
+  --color-primary:  #ea580c;  /* Orange-600 */
+  --color-accent:   #f59e0b;  /* Amber-400  */
+  --color-surface:  #431407;
+  --color-text:     #ffedd5;
+}
+
+body {
+  @apply bg-surface text-text transition-colors duration-500 min-h-screen;
+}
+
+/* Green glow when admin is live */
+[data-admin-live="true"] .btn-call {
+  box-shadow:   0 0 18px 4px #22c55e, 0 0 6px 1px #16a34a;
+  border-color: #22c55e;
+  transition:   box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-accent);
+}

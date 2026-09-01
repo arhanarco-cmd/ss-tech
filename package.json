@@ -1,0 +1,22 @@
+{
+  "name": "sstech",
+  "version": "1.0.0",
+  "description": "SStech - High-Security Interactive Web Gallery",
+  "private": true,
+  "scripts": {
+    "test": "vitest run test/integration && playwright test",
+    "test:security": "vitest run test/integration",
+    "test:e2e": "playwright test",
+    "test:unit": "vitest run test/integration"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.42.0",
+    "@types/express": "^5.0.6",
+    "@types/node": "^20.11.0",
+    "@types/supertest": "^6.0.2",
+    "express": "^5.2.1",
+    "supertest": "^6.3.4",
+    "typescript": "^5.3.3",
+    "vitest": "^0.34.6"
+  }
+}

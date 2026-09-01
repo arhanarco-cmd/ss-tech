@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Production & Build outputs
+dist/
+build/
+*.local
+
+# Environment variables & Secrets (CRITICAL)
+.env
+.env.production
+jwt_private.pem
+jwt_public.pem
+
+# Logs & Local Storage
+logs/
+*.ndjson
+storage/recordings/
+
+# Test & Playwright artifacts
+test-results/
+playwright-report/
+project_code_bundle.txt
