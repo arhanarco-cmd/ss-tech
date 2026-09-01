@@ -37,7 +37,6 @@ export const PhotoModal: FC<PhotoModalProps> = ({ item, caption, onClose, onDele
     }
   };
 
-  const showControls = role === 'admin' || role === 'user';
 
   return (
     <div 
