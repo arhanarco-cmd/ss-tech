@@ -12,7 +12,13 @@ export default defineConfig({
       },
       '/socket.io': {
         target: 'http://localhost:3001',
-        ws: true
+        ws: true,
+        configure: (proxy) => {
+          proxy.on('error', (err) => {
+            if (err.message.includes('ECONNABORTED') || err.message.includes('ECONNRESET')) return;
+            console.error('[vite-ws-proxy]', err.message);
+          });
+        }
       }
     }
   }

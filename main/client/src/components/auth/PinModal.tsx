@@ -7,6 +7,8 @@ interface PinModalProps {
   onClose: () => void;
 }
 
+import { API_BASE } from '../../services/api';
+
 export const PinModal: FC<PinModalProps> = ({ isOpen, onClose }) => {
   const [pin, setPin] = useState('');
   const [error, setError] = useState(false);
@@ -26,7 +28,7 @@ export const PinModal: FC<PinModalProps> = ({ isOpen, onClose }) => {
   const verifyPinWithBackend = async (pinToVerify: string) => {
     setLoading(true);
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

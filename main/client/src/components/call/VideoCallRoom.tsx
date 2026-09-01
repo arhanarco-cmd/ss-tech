@@ -141,7 +141,7 @@ export const VideoCallRoom: FC<VideoCallRoomProps> = ({ sessionId }) => {
               onClick={handleStartCall}
               className="flex items-center gap-2 px-8 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary/90 transition-transform hover:scale-105 active:scale-95 shadow-lg shadow-primary/20"
             >
-              <PhoneCall className="w-5 h-5" /> Start Call
+              <PhoneCall className="w-5 h-5" /> Start Video Call
             </button>
           </div>
         )}

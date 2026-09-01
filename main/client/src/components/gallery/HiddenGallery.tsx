@@ -6,9 +6,12 @@ interface HiddenGalleryProps {
   onUploadClick: () => void;
 }
 
+import { FLIRTY_QUOTES } from '../../constants/quotes';
+
 export const HiddenGallery: FC<HiddenGalleryProps> = ({ onUploadClick }) => {
   const { role, hiddenImages, removeHiddenImage } = useAppStore();
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
+  const [selectedCaption, setSelectedCaption] = useState<string>('');
 
   const handleDownload = (e: React.MouseEvent, src: string) => {
     e.stopPropagation();
@@ -27,8 +30,7 @@ export const HiddenGallery: FC<HiddenGalleryProps> = ({ onUploadClick }) => {
 
   return (
     <div className="animate-slide-up mb-12">
-      <div className="flex items-center justify-between mb-6 border-b border-primary/30 pb-2">
-        <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-400 drop-shadow-md">Hidden Gallery</h2>
+      <div className="flex justify-end mb-4">
         <button onClick={onUploadClick} className="flex items-center gap-2 px-3 py-1.5 text-sm font-bold bg-primary text-white rounded-lg hover:bg-primary/80 transition-colors shadow-sm">
           <Upload className="w-4 h-4" />
           <span className="hidden sm:inline">Add Photo/Video</span>
@@ -36,7 +38,7 @@ export const HiddenGallery: FC<HiddenGalleryProps> = ({ onUploadClick }) => {
       </div>
 
       {hiddenImages.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-12 text-primary/60 border-2 border-primary/20 border-dashed rounded-xl backdrop-blur-sm bg-white/5">
+        <div className="flex flex-col items-center justify-center p-12 text-primary/60 border-2 border-pink-200/50 border-dashed rounded-2xl bg-white/20">
           <p className="font-bold tracking-wide">No private items yet.</p>
         </div>
       ) : (
@@ -44,8 +46,11 @@ export const HiddenGallery: FC<HiddenGalleryProps> = ({ onUploadClick }) => {
           {hiddenImages.map((src, idx) => (
             <div 
               key={idx} 
-              className="aspect-square bg-surface border border-primary/20 rounded-xl flex items-center justify-center relative group overflow-hidden cursor-pointer shadow-lg"
-              onClick={() => setSelectedImg(src)}
+              className="aspect-square rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-pink-200/50 bg-white/20 hover:scale-[1.02] flex items-center justify-center relative group cursor-pointer"
+              onClick={() => {
+                setSelectedImg(src);
+                setSelectedCaption(FLIRTY_QUOTES[Math.floor(Math.random() * FLIRTY_QUOTES.length)]);
+              }}
             >
               <img 
                 src={src} 
@@ -78,12 +83,16 @@ export const HiddenGallery: FC<HiddenGalleryProps> = ({ onUploadClick }) => {
           <button className="absolute top-4 right-4 p-2 text-white hover:bg-white/10 rounded-full transition-colors">
             <X className="w-8 h-8" />
           </button>
-          <img 
-            src={selectedImg} 
-            alt="Preview" 
-            className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
-            onClick={e => e.stopPropagation()}
-          />
+          <div className="flex flex-col items-center gap-4" onClick={e => e.stopPropagation()}>
+            <img 
+              src={selectedImg} 
+              alt="Preview" 
+              className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
+            />
+            <div className="bg-white/20 border border-pink-300/50 shadow-[0_0_15px_rgba(244,63,94,0.3)] rounded-full px-6 py-3 text-pink-100 font-medium text-sm sm:text-base backdrop-blur-md max-w-[90%] text-center">
+              {selectedCaption}
+            </div>
+          </div>
         </div>
       )}
     </div>

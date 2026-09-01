@@ -1,6 +1,7 @@
 import { type FC } from 'react';
 import { X, User, Lock, Unlock, Phone, Image as ImageIcon } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
+import { API_BASE } from '../../services/api';
 
 interface DrawerProps {
   isOpen: boolean;
@@ -24,7 +25,7 @@ export const Drawer: FC<DrawerProps> = ({ isOpen, onClose, onAboutClick, onUnloc
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      await fetch(`${API_BASE}/api/auth/logout`, { method: 'POST', credentials: 'include' });
     } catch (err) {
       console.error('Logout error', err);
     }
@@ -128,7 +129,7 @@ export const Drawer: FC<DrawerProps> = ({ isOpen, onClose, onAboutClick, onUnloc
                 <div className={`p-2 rounded-lg ${adminLive ? 'bg-green-500/20 text-green-500' : 'bg-white/10 text-white/70'}`}>
                   <Phone className="w-5 h-5" />
                 </div>
-                <h3 className="font-semibold">Video Call Room</h3>
+                <h3 className="font-semibold">Video Call</h3>
               </div>
             </div>
             

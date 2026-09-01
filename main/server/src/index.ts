@@ -16,11 +16,18 @@ import { errorHandler } from "./middleware/errorHandler";
 import { setupSignaling } from "./sockets/signaling";
 import { auditLogger } from "./services/auditLogger";
 
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  "http://localhost:5173",
+  "https://sexyshreya.tech",
+  "https://www.sexyshreya.tech"
+].filter(Boolean) as string[];
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: allowedOrigins,
     credentials: true,
   },
 });
@@ -41,7 +48,7 @@ app.use(helmet({
 }));
 
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  origin: allowedOrigins,
   credentials: true,
 }));
 

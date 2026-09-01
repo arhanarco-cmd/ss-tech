@@ -11,6 +11,8 @@ import { VideoCallRoom } from './components/call/VideoCallRoom';
 import { UploadModal } from './components/gallery/UploadModal';
 import { socket } from './services/socket';
 
+import { ThoughtStream } from './components/layout/ThoughtStream';
+
 function App() {
   const { role, adminLive, activeCallId, setAdminLive, currentView } = useAppStore();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -50,14 +52,12 @@ function App() {
 
   return (
     <div className="flex flex-col min-h-screen relative overflow-hidden">
-      <DoodleBackground />
-      {/* Dynamic Animated Background */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full mix-blend-screen filter blur-[100px] opacity-30 animate-blob bg-primary transition-colors duration-1000" />
-        <div className="absolute top-[20%] right-[-10%] w-[40vw] h-[40vw] rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-blob bg-accent transition-colors duration-1000" style={{ animationDelay: '2s' }} />
-        <div className="absolute bottom-[-20%] left-[20%] w-[60vw] h-[60vw] rounded-full mix-blend-screen filter blur-[120px] opacity-30 animate-blob bg-primary transition-colors duration-1000" style={{ animationDelay: '4s' }} />
-      </div>
-
+      {role === 'user' && (
+        <>
+          <DoodleBackground />
+          <ThoughtStream />
+        </>
+      )}
       <div className="relative z-10 flex flex-col min-h-screen">
         <Navbar onMenuClick={() => setDrawerOpen(true)} />
         
@@ -68,7 +68,7 @@ function App() {
           onUnlockClick={() => setPinModalOpen(true)}
         />
         
-        <main className="flex-grow p-4 md:p-8 backdrop-blur-md bg-surface/40">
+        <main className="flex-grow p-4 md:p-8 bg-transparent">
           {activeCallId ? (
             <VideoCallRoom sessionId={activeCallId} />
           ) : (

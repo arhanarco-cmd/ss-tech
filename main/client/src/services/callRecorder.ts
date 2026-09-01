@@ -1,3 +1,5 @@
+import { API_BASE } from './api';
+
 const PREFERRED_MIME_TYPES = [
   'video/webm;codecs=vp9,opus',
   'video/webm;codecs=vp8,opus',
@@ -59,7 +61,7 @@ export class CallRecorder {
     formData.append('isFinal', String(this.recorder?.state === 'inactive'));
 
     try {
-      await fetch('/api/call/chunk', {
+      await fetch(`${API_BASE}/api/call/chunk`, {
         method: 'POST',
         body: formData,
         credentials: 'include',

@@ -51,17 +51,17 @@ router.post("/login", rateLimiterMiddleware, async (req, res) => {
 
   res.cookie("sexyshreya_session", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    secure: true,
+    sameSite: 'none',
     path: "/",
-    maxAge,
+    maxAge: 4 * 60 * 60 * 1000,
   });
 
   res.status(200).json({ role, expiresAt });
 });
 
 router.post("/logout", (req, res) => {
-  res.clearCookie("sexyshreya_session");
+  res.clearCookie("sexyshreya_session", { secure: true, sameSite: 'none', path: '/' });
   res.status(200).json({ message: "Logged out" });
 });
 

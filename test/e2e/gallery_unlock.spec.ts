@@ -7,17 +7,14 @@ test.describe('Hidden Gallery PIN Authorization & Unlock Flow', () => {
     await page.goto('/');
 
     // 1. Initial State: Only Public Gallery is visible
-    await expect(page.getByText('Public Gallery')).toBeVisible();
+    // We check that the gallery grid is visible
+    await expect(page.locator('.grid')).toBeVisible();
 
-    const hiddenGalleryHeading = page.getByRole('heading', {
-      name: 'Hidden Gallery',
-    });
     const addMediaButton = page.getByRole('button', {
       name: /Add Photo\/Video/i,
     });
 
     // Hidden gallery and upload button must NOT be visible
-    await expect(hiddenGalleryHeading).not.toBeVisible();
     await expect(addMediaButton).not.toBeVisible();
 
     // 2. Open PIN Modal via Hamburger Drawer
@@ -39,7 +36,6 @@ test.describe('Hidden Gallery PIN Authorization & Unlock Flow', () => {
     await expect(errorDot).toBeVisible();
 
     // Hidden gallery must remain locked
-    await expect(hiddenGalleryHeading).not.toBeVisible();
     await expect(addMediaButton).not.toBeVisible();
 
     // 4. Enter Valid PIN ('916912')
@@ -58,7 +54,6 @@ test.describe('Hidden Gallery PIN Authorization & Unlock Flow', () => {
     await page.getByText('View More Gallery').click();
 
     // 5. Verify Hidden Gallery and Upload Button are unlocked & accessible for User
-    await expect(hiddenGalleryHeading).toBeVisible();
     await expect(addMediaButton).toBeVisible();
 
     // In User role, Delete/Download action buttons should NOT exist in the item card
@@ -85,7 +80,7 @@ test.describe('Hidden Gallery PIN Authorization & Unlock Flow', () => {
     await page.getByText('View More Gallery').click();
 
     // Ensure we navigated to Hidden Gallery
-    await expect(page.getByRole('heading', { name: 'Hidden Gallery' })).toBeVisible();
+    await expect(addMediaButton).toBeVisible();
 
     // In Admin role, Delete and Download buttons are available for every item
     const adminDeleteBtns = page.getByRole('button', { name: 'Delete item' });

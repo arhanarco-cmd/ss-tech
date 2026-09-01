@@ -45,7 +45,7 @@ test.describe('WebRTC Call & Chunk Recording Pipeline (STORAGE_PIPELINE.md)', ()
 
     // 2. Verify "Ready to Connect / Idle" State
     await expect(page.getByText('Ready to Connect')).toBeVisible();
-    const startCallBtn = page.getByRole('button', { name: 'Start Call' });
+    const startCallBtn = page.getByRole('button', { name: 'Start Video Call' });
     await expect(startCallBtn).toBeVisible();
     
     // Click Start Call -> Transitions through Ringing to In Call
@@ -88,7 +88,7 @@ test.describe('WebRTC Call & Chunk Recording Pipeline (STORAGE_PIPELINE.md)', ()
 
     // Wait for the room to close and return cleanly to gallery view
     await expect(recBadge).not.toBeVisible();
-    await expect(page.getByText('Public Gallery')).toBeVisible();
+    await expect(page.locator('.grid')).toBeVisible();
 
     // 6. Verify chunk upload occurred and received 200 OK
     await expect
