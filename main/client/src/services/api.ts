@@ -1,3 +1,2 @@
-// @ts-ignore
-const envUrl = import.meta.env.VITE_API_URL;
-export const API_BASE = (envUrl && envUrl.trim() !== "" ? envUrl : (import.meta.env.PROD ? "https://sstech-server.onrender.com" : "")).replace(/\/$/, "");
+const envUrl = ((import.meta as unknown as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL || '').trim();
+export const API_BASE = (envUrl !== '' ? envUrl : 'https://sstech-server.onrender.com').replace(/\/$/, '');
